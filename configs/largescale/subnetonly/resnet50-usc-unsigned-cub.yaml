@@ -1,29 +1,31 @@
 # Architecture
-arch: Conv4
+arch: ResNet50
 
 # ===== Dataset ===== #
 data: /mnt
-set: CIFAR10
-name: conv4_sc_unsigned
+set: CUB200
 
 # ===== Learning Rate Policy ======== #
 optimizer: sgd
-lr: 0.1
+lr: 0.256 # 0.01, 0.001 80%
 lr_policy: cosine_lr
+warmup_length: 5
 
 # ===== Network training config ===== #
-epochs: 100
-weight_decay: 0.0001
-momentum: 0.9
-batch_size: 128
+epochs: 200
+weight_decay: 0.000030517578125
+momentum: 0.875
+batch_size: 64
+label_smoothing: 0.1
 
 # ===== Sparsity =========== #
 conv_type: SubnetConv
 bn_type: NonAffineBatchNorm
 freeze_weights: True
-prune_rate: -1
+prune_rate: -1 # Override
 init: signed_constant
-scale_fan: True
+mode: fan_in
+nonlinearity: relu
 
 # ===== Hardware setup ===== #
-workers: 4
+workers: 0

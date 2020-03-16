@@ -36,6 +36,11 @@ def train(train_loader, model, criterion, optimizer, epoch, args, writer):
         if args.gpu is not None:
             images = images.cuda(args.gpu, non_blocking=True)
 
+        ### for MNIST
+        #images = images.expand()
+        #import pdb
+        #pdb.set_trace()
+        
         target = target.cuda(args.gpu, non_blocking=True)
 
         # compute output

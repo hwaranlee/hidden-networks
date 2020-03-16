@@ -23,13 +23,11 @@ from utils.net_utils import (
 )
 from utils.schedulers import get_policy
 
-
 from args import args
 import importlib
 
 import data
 import models
-
 
 def main():
     print(args)
@@ -57,6 +55,9 @@ def main_worker(args):
 
     if args.pretrained:
         pretrained(args, model)
+
+    if args.transfer:
+        transfer(args, model)
 
     optimizer = get_optimizer(args, model)
     data = get_dataset(args)
@@ -289,6 +290,32 @@ def pretrained(args, model):
         if isinstance(m, FixedSubnetConv):
             m.set_subnet()
 
+def transfer(args, model):
+    if os.path.isfile(args.transfer):
+        print("=> loading pretrained weights from '{}'".format(args.pretrained))
+        pretrained = torch.load(
+            args.transfer,
+            map_location=torch.device("cuda:{}".format(args.multigpu[0])),
+        )["state_dict"]
+
+        model_state_dict = model.state_dict()
+        for k, v in pretrained.items():
+            if k not in model_state_dict or v.size() != model_state_dict[k].size():
+                print("IGNORE:", k)
+        pretrained = {
+            k: v
+            for k, v in pretrained.items()
+            if (k in model_state_dict and v.size() == model_state_dict[k].size())
+        }
+        model_state_dict.update(pretrained)
+        model.load_state_dict(model_state_dict)
+
+    else:
+        raise ValueError("=> no pretrained weights found at '{}'".format(args.pretrained))
+
+    for n, m in model.named_modules():
+        if isinstance(m, FixedSubnetConv):
+            m.set_subnet()
 
 def get_dataset(args):
     print(f"=> Getting {args.set} dataset")
@@ -302,7 +329,7 @@ def get_model(args):
         args.first_layer_type = "DenseConv"
 
     print("=> Creating model '{}'".format(args.arch))
-    model = models.__dict__[args.arch]()
+    model = models.__dict__[args.arch](num_classes=200)
 
     # applying sparsity to the network
     if (

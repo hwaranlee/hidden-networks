@@ -112,6 +112,13 @@ def parse_arguments():
         help="use pre-trained model",
     )
     parser.add_argument(
+        "--transfer",
+        dest="transfer",
+        default=None,
+        type=str,
+        help="use pre-trained model to transfer",
+    )
+    parser.add_argument(
         "--seed", default=None, type=int, help="seed for initializing training. "
     )
     parser.add_argument(

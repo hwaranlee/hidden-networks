@@ -163,17 +163,18 @@ class ResNet(nn.Module):
 
 
 # ResNet }}}
-def ResNet18(pretrained=False):
-    return ResNet(get_builder(), BasicBlock, [2, 2, 2, 2], 1000)
+def ResNet18(pretrained=False, num_classes=1000):
+    return ResNet(get_builder(), BasicBlock, [2, 2, 2, 2], num_classes=num_classes)
 
 
-def ResNet50(pretrained=False):
-    return ResNet(get_builder(), Bottleneck, [3, 4, 6, 3], 1000)
+def ResNet50(pretrained=False, num_classes=1000):
+    return ResNet(get_builder(), Bottleneck, [3, 4, 6, 3], num_classes=num_classes)
 
+#def ResNet50Cifar(pretrained=False):
+#    return ResNet(get_builder(), Bottleneck, [3, 4, 6, 3], 10)
 
-def ResNet101(pretrained=False):
-    return ResNet(get_builder(), Bottleneck, [3, 4, 23, 3], 1000)
-
+def ResNet101(pretrained=False, num_classes=1000):
+    return ResNet(get_builder(), Bottleneck, [3, 4, 23, 3], num_classes=num_classes)
 
 def WideResNet50_2(pretrained=False):
     return ResNet(
