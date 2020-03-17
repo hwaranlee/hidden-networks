@@ -183,6 +183,11 @@ def parse_arguments():
         action="store_true",
         help="Whether or not to train only subnet (this freezes weights)",
     )
+    parser.add_argument(
+        "--freeze-scores",
+        action="store_true",
+        help="Whether or not to train only weights in the subnet (this scores weights)",
+    )
     parser.add_argument("--mode", default="fan_in", help="Weight initialization mode")
     parser.add_argument(
         "--nonlinearity", default="relu", help="Nonlinearity used by initialization"

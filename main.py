@@ -17,6 +17,7 @@ from utils.logging import AverageMeter, ProgressMeter
 from utils.net_utils import (
     set_model_prune_rate,
     freeze_model_weights,
+    freeze_model_subnet,
     save_checkpoint,
     get_lr,
     LabelSmoothing,
@@ -349,6 +350,10 @@ def get_model(args):
     if args.freeze_weights:
         freeze_model_weights(model)
 
+    # freezing the scores if we are only doing subnet training
+    if args.freeze_scores:
+        freeze_model_subnet(model)
+        
     return model
 
 
